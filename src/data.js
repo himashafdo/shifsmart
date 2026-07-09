@@ -67,10 +67,10 @@ export const ORDERS = [
   },
   {
     id: "ORD004",
-    customer: "Kelly Fedler",
+    customer: "Kelly Felder",
     due: "28 Jul 2026",
     progress: 60,
-    stage: "Dyeing",
+    stage: "Dying",
     status: "In Progress",
     risk: "Medium",
   },
@@ -243,7 +243,7 @@ export const ALLOCATIONS = [
   {
     id: "W002",
     name: "Nimal Fernando",
-    skills: "Machine Operator",
+    skills: "Machine Operating",
     role: "Washing Machine Operator",
     status: "Allocated",
   },
