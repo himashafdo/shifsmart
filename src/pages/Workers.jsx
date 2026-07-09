@@ -3,18 +3,22 @@ import { useApp } from "../context/AppContext";
 import { Plus, Eye, Pencil, Trash2, X } from "lucide-react";
 import { PageHead } from "../components/Bits";
 
+const EMPTY = {
+  name: "",
+  nic: "",
+  age: "",
+  skills: "",
+  experience: "",
+  status: "Active",
+};
+
 export default function Workers() {
-  const { workers, addWorker, deleteWorker } = useApp();
-  const [open, setOpen] = useState(false);
+  const { workers, addWorker, deleteWorker, updateWorker } = useApp();
+  const [open, setOpen] = useState(false); // add/edit modal
+  const [viewing, setViewing] = useState(null); // view modal
+  const [editingId, setEditingId] = useState(null); // null = adding, else editing this id
   const [q, setQ] = useState("");
-  const [form, setForm] = useState({
-    name: "",
-    nic: "",
-    age: "",
-    skills: "",
-    experience: "",
-    status: "Active",
-  });
+  const [form, setForm] = useState(EMPTY);
 
   const filtered = workers.filter(
     (w) =>
@@ -22,19 +26,40 @@ export default function Workers() {
       w.skills.toLowerCase().includes(q.toLowerCase()),
   );
 
+  const openAdd = () => {
+    setEditingId(null);
+    setForm(EMPTY);
+    setOpen(true);
+  };
+
+  const openEdit = (w) => {
+    setEditingId(w.id);
+    setForm({
+      name: w.name,
+      nic: w.nic || "",
+      age: w.age,
+      skills: w.skills,
+      experience: w.experience,
+      status: w.status,
+    });
+    setOpen(true);
+  };
+
   const save = () => {
     if (!form.name) return alert("Enter a name");
     if (!form.nic) return alert("Enter a National ID");
-    addWorker(form);
-    setForm({
-      name: "",
-      nic: "",
-      age: "",
-      skills: "",
-      experience: "",
-      status: "Active",
-    });
+    if (editingId) {
+      updateWorker(editingId, form);
+    } else {
+      addWorker(form);
+    }
+    setForm(EMPTY);
+    setEditingId(null);
     setOpen(false);
+  };
+
+  const remove = (id) => {
+    if (confirm("Remove this worker?")) deleteWorker(id);
   };
 
   return (
@@ -42,7 +67,7 @@ export default function Workers() {
       <PageHead
         title="Workers"
         action={
-          <button className="btn-primary" onClick={() => setOpen(true)}>
+          <button className="btn-primary" onClick={openAdd}>
             <Plus size={16} /> Add New Worker
           </button>
         }
@@ -95,16 +120,13 @@ export default function Workers() {
                   </span>
                 </td>
                 <td className="row-actions">
-                  <button className="ico">
+                  <button className="ico" onClick={() => setViewing(w)}>
                     <Eye size={15} />
                   </button>
-                  <button className="ico">
+                  <button className="ico" onClick={() => openEdit(w)}>
                     <Pencil size={15} />
                   </button>
-                  <button
-                    className="ico red"
-                    onClick={() => deleteWorker(w.id)}
-                  >
+                  <button className="ico red" onClick={() => remove(w.id)}>
                     <Trash2 size={15} />
                   </button>
                 </td>
@@ -114,11 +136,12 @@ export default function Workers() {
         </table>
       </div>
 
+      {/* Add / Edit modal */}
       {open && (
         <div className="modal-overlay" onClick={() => setOpen(false)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>
             <div className="modal-head">
-              <h3>Register New Worker</h3>
+              <h3>{editingId ? "Edit Worker" : "Register New Worker"}</h3>
               <button onClick={() => setOpen(false)}>
                 <X size={18} />
               </button>
@@ -182,12 +205,60 @@ export default function Workers() {
                 Cancel
               </button>
               <button className="btn-primary" onClick={save}>
-                Save Worker
+                {editingId ? "Save Changes" : "Save Worker"}
               </button>
             </div>
           </div>
         </div>
       )}
+
+      {/* View modal */}
+      {viewing && (
+        <div className="modal-overlay" onClick={() => setViewing(null)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-head">
+              <h3>Worker Details</h3>
+              <button onClick={() => setViewing(null)}>
+                <X size={18} />
+              </button>
+            </div>
+            <div className="modal-grid">
+              <ViewRow label="Worker ID" value={viewing.id} />
+              <ViewRow label="Full Name" value={viewing.name} />
+              <ViewRow label="National ID" value={viewing.nic || "—"} />
+              <ViewRow label="Age" value={viewing.age} />
+              <ViewRow label="Skills" value={viewing.skills} />
+              <ViewRow label="Experience" value={viewing.experience} />
+              <ViewRow label="Status" value={viewing.status} />
+            </div>
+            <div className="modal-foot">
+              <button className="btn-ghost" onClick={() => setViewing(null)}>
+                Close
+              </button>
+              <button
+                className="btn-primary"
+                onClick={() => {
+                  openEdit(viewing);
+                  setViewing(null);
+                }}
+              >
+                Edit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ViewRow({ label, value }) {
+  return (
+    <div>
+      <div style={{ fontSize: ".76rem", color: "#6b7a90", marginBottom: 4 }}>
+        {label}
+      </div>
+      <div style={{ fontSize: ".9rem", fontWeight: 600 }}>{value}</div>
     </div>
   );
 }

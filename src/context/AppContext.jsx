@@ -6,7 +6,7 @@ export const useApp = () => useContext(AppContext);
 
 export function AppProvider({ children }) {
   const [isAuthed, setIsAuthed] = useState(
-    () => sessionStorage.getItem("shift_authed") === "true"
+    () => sessionStorage.getItem("shift_authed") === "true",
   );
 
   const [workers, setWorkers] = useState(() => {
@@ -44,6 +44,10 @@ export function AppProvider({ children }) {
   const deleteWorker = (id) =>
     setWorkers((prev) => prev.filter((w) => w.id !== id));
 
+  const updateWorker = (id, updated) =>
+    setWorkers((prev) =>
+      prev.map((w) => (w.id === id ? { ...w, ...updated } : w)),
+    );
   const addShiftRequest = (r) =>
     setShiftRequests((prev) => [
       { ...r, id: `SR-${1000 + prev.length + 1}`, status: "Pending" },
@@ -53,9 +57,15 @@ export function AppProvider({ children }) {
   return (
     <AppContext.Provider
       value={{
-        isAuthed, login, logout,
-        workers, addWorker, deleteWorker,
-        shiftRequests, addShiftRequest,
+        isAuthed,
+        login,
+        logout,
+        workers,
+        addWorker,
+        deleteWorker,
+        updateWorker,
+        shiftRequests,
+        addShiftRequest,
       }}
     >
       {children}
