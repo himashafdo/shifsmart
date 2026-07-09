@@ -1,9 +1,23 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 import {
-  LayoutDashboard, Users, ClipboardList, Network, CalendarCheck,
-  PackageSearch, BarChart3, Building2, Bell, UserCog, Settings,
-  Search, Mail, Calendar, ChevronDown, LogOut,
+  LayoutDashboard,
+  Users,
+  ClipboardList,
+  Network,
+  CalendarCheck,
+  PackageSearch,
+  BarChart3,
+  Building2,
+  Bell,
+  UserCog,
+  Settings,
+  Search,
+  Mail,
+  Calendar,
+  ChevronDown,
+  LogOut,
+  AlertTriangle,
 } from "lucide-react";
 
 const NAV = [
@@ -12,6 +26,8 @@ const NAV = [
   { to: "/shift-requests", label: "Shift Requests", icon: ClipboardList },
   { to: "/allocation", label: "Worker Allocation", icon: Network },
   { to: "/attendance", label: "Attendance", icon: CalendarCheck },
+
+  { to: "/labour-shortage", label: "Labour Shortage", icon: AlertTriangle },
   { to: "/orders", label: "Order Progress", icon: PackageSearch },
   { to: "/reports", label: "Reports & Analytics", icon: BarChart3 },
   { to: "/agency", label: "Agency Portal", icon: Building2 },
@@ -37,8 +53,13 @@ export default function Layout({ children }) {
 
         <nav className="side-nav">
           {NAV.map(({ to, label, icon: Icon, badge }) => (
-            <NavLink key={to} to={to}
-              className={({ isActive }) => "side-link" + (isActive ? " active" : "")}>
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) =>
+                "side-link" + (isActive ? " active" : "")
+              }
+            >
               <Icon size={18} />
               <span>{label}</span>
               {badge && <span className="nav-badge">{badge}</span>}
@@ -55,10 +76,18 @@ export default function Layout({ children }) {
             </div>
           </div>
           <div className="legend">
-            <span><i style={{ background: "#1e3a5f" }} /> Admin</span>
-            <span><i style={{ background: "#2e9e5b" }} /> HR Manager</span>
-            <span><i style={{ background: "#e6a23c" }} /> Supervisor</span>
-            <span><i style={{ background: "#e0524d" }} /> Agency User</span>
+            <span>
+              <i style={{ background: "#1e3a5f" }} /> Admin
+            </span>
+            <span>
+              <i style={{ background: "#2e9e5b" }} /> HR Manager
+            </span>
+            <span>
+              <i style={{ background: "#e6a23c" }} /> Supervisor
+            </span>
+            <span>
+              <i style={{ background: "#e0524d" }} /> Agency User
+            </span>
           </div>
         </div>
       </aside>
@@ -70,10 +99,24 @@ export default function Layout({ children }) {
             <input placeholder="Search anything..." />
           </div>
           <div className="top-actions">
-            <button className="icon-pill"><Bell size={18} /><span className="dot">12</span></button>
-            <button className="icon-pill"><Mail size={18} /><span className="dot blue">3</span></button>
-            <button className="icon-pill"><Calendar size={18} /></button>
-            <div className="profile" onClick={() => { logout(); navigate("/"); }}>
+            <button className="icon-pill">
+              <Bell size={18} />
+              <span className="dot">12</span>
+            </button>
+            <button className="icon-pill">
+              <Mail size={18} />
+              <span className="dot blue">3</span>
+            </button>
+            <button className="icon-pill">
+              <Calendar size={18} />
+            </button>
+            <div
+              className="profile"
+              onClick={() => {
+                logout();
+                navigate("/");
+              }}
+            >
               <div className="avatar">TP</div>
               <div className="profile-text">
                 <div>Tharindu Perera</div>
@@ -81,7 +124,13 @@ export default function Layout({ children }) {
               </div>
               <ChevronDown size={16} />
             </div>
-            <button className="logout-btn" onClick={() => { logout(); navigate("/"); }}>
+            <button
+              className="logout-btn"
+              onClick={() => {
+                logout();
+                navigate("/");
+              }}
+            >
               <LogOut size={16} />
             </button>
           </div>
@@ -90,8 +139,12 @@ export default function Layout({ children }) {
         <main className="content">{children}</main>
 
         <footer className="page-footer">
-          © 2026 ShiftSmart Workforce Optimisation System &nbsp;|&nbsp; Union Colombo Industrial Washing (Pvt) Ltd. All rights reserved.
-          <span>Version 1.0.0 &nbsp;·&nbsp; Privacy Policy &nbsp;·&nbsp; Terms of Use</span>
+          © 2026 ShiftSmart Workforce Optimisation System &nbsp;|&nbsp; Union
+          Colombo Industrial Washing (Pvt) Ltd. All rights reserved.
+          <span>
+            Version 1.0.0 &nbsp;·&nbsp; Privacy Policy &nbsp;·&nbsp; Terms of
+            Use
+          </span>
         </footer>
       </div>
     </div>

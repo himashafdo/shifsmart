@@ -18,11 +18,34 @@ export function AppProvider({ children }) {
     const saved = localStorage.getItem("shift_requests");
     return saved ? JSON.parse(saved) : [];
   });
+  const [labourShortage, setLabourShortage] = useState(() => {
+    const saved = localStorage.getItem("shift_labour_shortage");
+    return saved
+      ? JSON.parse(saved)
+      : {
+          totalRequired: 120,
+          totalConfirmed: 108,
+          skilledRequired: 20,
+          skilledConfirmed: 18,
+          semiRequired: 60,
+          semiConfirmed: 58,
+          unskilledRequired: 40,
+          unskilledConfirmed: 32,
+          shift: "Day Shift",
+          notes: "",
+        };
+  });
 
   useEffect(() => {
     localStorage.setItem("shift_workers", JSON.stringify(workers));
   }, [workers]);
 
+  useEffect(() => {
+    localStorage.setItem(
+      "shift_labour_shortage",
+      JSON.stringify(labourShortage),
+    );
+  }, [labourShortage]);
   useEffect(() => {
     localStorage.setItem("shift_requests", JSON.stringify(shiftRequests));
   }, [shiftRequests]);
@@ -53,6 +76,7 @@ export function AppProvider({ children }) {
       { ...r, id: `SR-${1000 + prev.length + 1}`, status: "Pending" },
       ...prev,
     ]);
+  const saveLabourShortage = (data) => setLabourShortage(data);
 
   return (
     <AppContext.Provider
@@ -66,6 +90,8 @@ export function AppProvider({ children }) {
         updateWorker,
         shiftRequests,
         addShiftRequest,
+        labourShortage,
+        saveLabourShortage,
       }}
     >
       {children}
